@@ -1,0 +1,2 @@
+#!/bin/sh
+docker run -ti --rm --name "signalling5.2" -p "8082:8080" -p "8888:8888" -v "$PWD/config.json:/SignallingWebServer/config.json" gcr.io/ngp-odyssey/signallingwebserver:5.2-20230712075228

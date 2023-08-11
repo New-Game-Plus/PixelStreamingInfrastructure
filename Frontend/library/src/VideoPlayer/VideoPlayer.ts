@@ -205,7 +205,17 @@ export class VideoPlayer {
     }
 
     updateVideoStreamSize() {
+        Logger.Log(
+            Logger.GetStackTrace(),
+            'Triggered - updateVideoStreamSize',
+            6
+        );
         if (!this.config.isFlagEnabled(Flags.MatchViewportResolution)) {
+            Logger.Log(
+                Logger.GetStackTrace(),
+                'Flags.MatchViewportResolution is false',
+                6
+            );
             return;
         }
 
@@ -219,6 +229,11 @@ export class VideoPlayer {
             this.onMatchViewportResolutionCallback(
                 videoElementParent.clientWidth,
                 videoElementParent.clientHeight
+            );
+            Logger.Log(
+                Logger.GetStackTrace(),
+                'Triggered - this.onMatchViewportResolutionCallback',
+                6
             );
 
             this.lastTimeResized = new Date().getTime();
