@@ -1327,6 +1327,11 @@ export class WebRtcPlayerController {
         );
 
         if(this.isReconnecting) {
+            Logger.Log(
+                Logger.GetStackTrace(),
+                `Reconnect attempt: ${this.reconnectAttempt}`,
+                6
+            );
             if(messageStreamerList.ids.includes(this.subscribedStream)) {
                 // If we're reconnecting and the previously subscribed stream has come back, resubscribe to it
                 this.isReconnecting = false;
@@ -1355,16 +1360,28 @@ export class WebRtcPlayerController {
                 );
             }
         } else {
-            const settingOptions = [...messageStreamerList.ids]; // copy the original messageStreamerList.ids
-            settingOptions.unshift(''); // add an empty option at the top
+            Logger.Log(
+                Logger.GetStackTrace(),
+                `Got streamer list ${messageStreamerList.ids}`,
+                6
+            );
             this.config.setOptionSettingOptions(
                 OptionParameters.StreamerId,
-                settingOptions
+                messageStreamerList.ids
             );
-
             const urlParams = new URLSearchParams(window.location.search);
             let autoSelectedStreamerId: string | null = null;
-            if (messageStreamerList.ids.length == 1) {
+            if (messageStreamerList.ids.length == 0) {
+                this.reconnectAttempt = 1;
+                Logger.Log(
+                    Logger.GetStackTrace(),
+                    `Streamer list empty. Retrying ${messageStreamerList.ids}`,
+                    6
+                );
+                setTimeout(() => {
+                    this.webSocketController.requestStreamerList();
+                }, 2000)
+            } else if (messageStreamerList.ids.length == 1) {
                 // If there's only a single streamer, subscribe to it regardless of what is in the URL
                 autoSelectedStreamerId = messageStreamerList.ids[0];
             } else if (

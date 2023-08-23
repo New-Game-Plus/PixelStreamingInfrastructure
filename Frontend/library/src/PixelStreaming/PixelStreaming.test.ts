@@ -253,7 +253,31 @@ describe('PixelStreaming', () => {
         const pixelStreaming = new PixelStreaming(config);
 
         triggerWebSocketOpen();
-        
+
+        expect(webSocketSpyFunctions.sendSpy).toHaveBeenCalledWith(
+            expect.stringMatching(/"type":"listStreamers"/)
+        );
+    });
+
+    it('should re-send streamer request if received no streamer in streamerList', () => {
+        const config = new Config({ initialSettings: {ss: mockSignallingUrl, AutoConnect: true}});
+        const streamerListSpy = jest.fn();
+        const pixelStreaming = new PixelStreaming(config);
+        pixelStreaming.addEventListener("streamerListMessage", streamerListSpy);
+
+        const emptyStreamerList = [];
+        triggerWebSocketOpen();
+        triggerConfigMessage();
+        triggerStreamerListMessage([]);
+
+        expect(streamerListSpy).toHaveBeenCalledWith(new StreamerListMessageEvent({
+            messageStreamerList: expect.objectContaining({
+                type: MessageRecvTypes.STREAMER_LIST,
+                ids: emptyStreamerList
+            }),
+            autoSelectedStreamerId: null
+        }));
+        jest.advanceTimersByTime(2000);
         expect(webSocketSpyFunctions.sendSpy).toHaveBeenCalledWith(
             expect.stringMatching(/"type":"listStreamers"/)
         );
