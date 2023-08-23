@@ -369,13 +369,15 @@ export class PeerConnectionController {
         if (RTCRtpReceiver.getCapabilities && this.preferredCodec != '') {
             for (const transceiver of this.peerConnection?.getTransceivers() ?? []) {
                 if (
-                    transceiver &&  
+                    transceiver &&
                     transceiver.receiver &&
                     transceiver.receiver.track &&
                     transceiver.receiver.track.kind === 'video' &&
                     // As of 06/2023, FireFox has added RTCRtpReceiver.getCapabilities, but hasn't added the ability to set codec preferences
                     transceiver.setCodecPreferences
                 ) {
+
+                    console.debug(`Trying to split this.preferredCodec: ${this.preferredCodec}`);
                     const preferredRTPCodec = this.preferredCodec.split(' ');
                     const codecs = [
                         {
@@ -396,6 +398,7 @@ export class PeerConnectionController {
                         })
                         .forEach((option) => {
                             // Ammend the rest of the browsers supported codecs
+                            console.debug(`Trying to split option: ${option}`);
                             const altCodec = option.split(' ');
                             codecs.push({
                                 mimeType: 'video/' + altCodec[0] /* Name */,

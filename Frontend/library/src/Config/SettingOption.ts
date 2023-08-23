@@ -113,12 +113,14 @@ export class SettingOption<
         if (filteredList.length) {
             this.value = filteredList[0];
             return;
-        } 
+        }
 
         // A user has specified a codec with a fmtp string but this codec + fmtp line isn't available.
         // in that case, just use the codec
         filteredList = this.options.filter(
-            (option: string) => option.indexOf(value.split(' ')[0]) !== -1
+            (option: string) => {
+              return option.indexOf(value.split(' ')[0]) !== -1
+            }
         );
         if (filteredList.length) {
             this.value = filteredList[0];

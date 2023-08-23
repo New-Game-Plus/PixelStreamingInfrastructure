@@ -228,6 +228,7 @@ export class Config {
                     const codecs =
                         RTCRtpReceiver.getCapabilities('video').codecs;
                     codecs.forEach((codec) => {
+                        console.debug(`Trying to split codec.mimeType: ${codec.mimeType}`);
                         const str =
                             codec.mimeType.split('/')[1] +
                             ' ' +
@@ -241,7 +242,7 @@ export class Config {
                 })(),
                 useUrlParams
             )
-        );	
+        );
 
         /**
          * Boolean parameters

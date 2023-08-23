@@ -204,8 +204,8 @@ export class WebRtcPlayerController {
             );
             this.setVideoEncoderAvgQP(0);
         };
-        this.webSocketController.onPlayerCount = (playerCount: MessageReceive.MessagePlayerCount) => { 
-            this.pixelStreaming._onPlayerCount(playerCount.count); 
+        this.webSocketController.onPlayerCount = (playerCount: MessageReceive.MessagePlayerCount) => {
+            this.pixelStreaming._onPlayerCount(playerCount.count);
         };
         this.webSocketController.onOpen.addEventListener('open', () => {
             const BrowserSendsOffer = this.config.isFlagEnabled(
@@ -289,17 +289,17 @@ export class WebRtcPlayerController {
             let signallingServerUrl = this.config.getTextSettingValue(
                 TextParameters.SignallingServerUrl
             );
-    
+
             // If we are connecting to the SFU add a special url parameter to the url
             if (this.config.isFlagEnabled(Flags.BrowserSendOffer)) {
                 signallingServerUrl += '?' + Flags.BrowserSendOffer + '=true';
             }
-    
+
             // This code is no longer needed, but is a good example for how subsequent config flags can be appended
             // if (this.config.isFlagEnabled(Flags.BrowserSendOffer)) {
             //     signallingServerUrl += (signallingServerUrl.includes('?') ? '&' : '?') + Flags.BrowserSendOffer + '=true';
             // }
-    
+
             return signallingServerUrl;
         }
     }
@@ -903,8 +903,8 @@ export class WebRtcPlayerController {
     }
 
     /**
-     * 
-     * @param message 
+     *
+     * @param message
      */
     onGamepadResponse(message: ArrayBuffer) {
         const responseString = new TextDecoder('utf-16').decode(message.slice(1));
@@ -1230,7 +1230,7 @@ export class WebRtcPlayerController {
             // Browsers emit "connected" when getting first connection and "completed" when finishing
             // candidate checking. However, sometimes browsers can skip "connected" and only emit "completed".
             // Therefore need to check both cases and emit onWebRtcConnected only once on the first hit.
-            if (!webRtcConnectedSent && 
+            if (!webRtcConnectedSent &&
                 ["connected", "completed"].includes(this.peerConnectionController.peerConnection.iceConnectionState)) {
                 this.pixelStreaming._onWebRtcConnected();
                 webRtcConnectedSent = true;
@@ -1349,7 +1349,7 @@ export class WebRtcPlayerController {
                 this.isReconnecting = false;
                 this.shouldReconnect = false;
                 this.webSocketController.close();
-                
+
                 this.config.setOptionSettingValue(
                     OptionParameters.StreamerId,
                     ""
@@ -1685,8 +1685,8 @@ export class WebRtcPlayerController {
     }
 
     /**
-     * Send the { WebRTC.MinBitrate: SomeNumber }} command to UE to set 
-     * the minimum bitrate that we allow WebRTC to use 
+     * Send the { WebRTC.MinBitrate: SomeNumber }} command to UE to set
+     * the minimum bitrate that we allow WebRTC to use
      * (note setting this too high in poor networks can be problematic).
      * @param minBitrate - The minimum bitrate we would like WebRTC to not fall below.
      */
@@ -1700,8 +1700,8 @@ export class WebRtcPlayerController {
     }
 
     /**
-     * Send the { WebRTC.MaxBitrate: SomeNumber }} command to UE to set 
-     * the minimum bitrate that we allow WebRTC to use 
+     * Send the { WebRTC.MaxBitrate: SomeNumber }} command to UE to set
+     * the minimum bitrate that we allow WebRTC to use
      * (note setting this too low could result in blocky video).
      * @param minBitrate - The minimum bitrate we would like WebRTC to not fall below.
      */
@@ -1716,8 +1716,8 @@ export class WebRtcPlayerController {
 
     /**
      * Send the { WebRTC.Fps: SomeNumber }} UE 5.0+
-     * and { WebRTC.MaxFps } UE 4.27 command to set 
-     * the maximum fps we would like WebRTC to stream at. 
+     * and { WebRTC.MaxFps } UE 4.27 command to set
+     * the maximum fps we would like WebRTC to stream at.
      * @param fps - The maximum stream fps.
      */
      sendWebRTCFps(fps: number) {
