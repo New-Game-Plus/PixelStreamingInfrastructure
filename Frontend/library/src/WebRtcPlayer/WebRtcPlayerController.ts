@@ -1109,9 +1109,12 @@ export class WebRtcPlayerController {
         this.pixelStreaming.dispatchEvent(new PlayStreamEvent());
 
         if (this.streamController.audioElement.srcObject) {
-            this.streamController.audioElement.muted =
-                this.config.isFlagEnabled(Flags.StartVideoMuted);
+            const startMuted = this.config.isFlagEnabled(Flags.StartVideoMuted)
+            this.streamController.audioElement.muted = startMuted;
 
+            if (startMuted) {
+              this.playVideo();
+            } else {
             this.streamController.audioElement
                 .play()
                 .then(() => {
@@ -1129,6 +1132,7 @@ export class WebRtcPlayerController {
                         })
                     );
                 });
+            }
         } else {
             this.playVideo();
         }
@@ -1161,8 +1165,10 @@ export class WebRtcPlayerController {
      * Enable the video to play automatically if enableAutoplay is true
      */
     autoPlayVideoOrSetUpPlayOverlay() {
+        console.debug("autoPlayVideoOrSetUpPlayOverlay()");
         if (this.config.isFlagEnabled(Flags.AutoPlayVideo)) {
             // attempt to play the video
+            console.debug("this.playStream();");
             this.playStream();
         }
         this.resizePlayerStyle();
