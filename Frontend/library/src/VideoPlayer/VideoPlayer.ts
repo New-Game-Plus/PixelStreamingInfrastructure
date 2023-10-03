@@ -56,6 +56,11 @@ export class VideoPlayer {
         // set play for video (and audio)
         this.videoElement.onclick = () => {
             if (this.audioElement != undefined && this.audioElement.paused) {
+                Logger.Log(
+                    Logger.GetStackTrace(),
+                    'Video clicked, unmuting audio',
+                    6
+                );
                 this.audioElement.play();
             }
             if (this.videoElement.paused) {
