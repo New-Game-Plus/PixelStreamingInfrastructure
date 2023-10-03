@@ -224,9 +224,11 @@ export class VideoPlayer {
                 return;
             }
 
+            const devicePixelRatio = window.devicePixelRatio ?? 1;
+
             this.onMatchViewportResolutionCallback(
-                videoElementParent.clientWidth,
-                videoElementParent.clientHeight
+                videoElementParent.clientWidth * devicePixelRatio,
+                videoElementParent.clientHeight * devicePixelRatio
             );
 
             this.lastTimeResized = new Date().getTime();
