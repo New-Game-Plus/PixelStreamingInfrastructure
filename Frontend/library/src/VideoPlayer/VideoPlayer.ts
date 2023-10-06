@@ -229,7 +229,16 @@ export class VideoPlayer {
                 return;
             }
 
-            const devicePixelRatio = window.devicePixelRatio ?? 1;
+            const devicePixelRatio = (() => {
+              if (!this.config.isFlagEnabled(Flags.UseNativeResolution)) return 1;
+              if (window.devicePixelRatio === undefined && window.devicePixelRatio === null) return 1;
+              Logger.Log(
+                  Logger.GetStackTrace(),
+                  `Using native device pixel ratio ${window.devicePixelRatio}`,
+                  6
+              );
+              return window.devicePixelRatio;
+            })();
 
             this.onMatchViewportResolutionCallback(
                 videoElementParent.clientWidth * devicePixelRatio,

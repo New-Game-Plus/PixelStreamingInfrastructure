@@ -33,6 +33,7 @@ export class Flags {
     static GamepadInput = 'GamepadInput' as const;
     static XRControllerInput = 'XRControllerInput' as const;
     static WaitForStreamer = "WaitForStreamer" as const;
+    static UseNativeResolution = "UseNativeResolution" as const;
 }
 
 export type FlagsKeys = Exclude<keyof typeof Flags, 'prototype'>;
@@ -377,6 +378,17 @@ export class Config {
                 'Match viewport resolution',
                 'Pixel Streaming will be instructed to dynamically resize the video stream to match the size of the video element.',
                 false,
+                useUrlParams
+            )
+        );
+
+        this.flags.set(
+            Flags.UseNativeResolution,
+            new SettingFlag(
+                Flags.UseNativeResolution,
+                'Use native device resolution',
+                'When dynamically resizing resolution, it will be set to the native resolution of the client device, using the device pixel ratio.',
+                true,
                 useUrlParams
             )
         );
