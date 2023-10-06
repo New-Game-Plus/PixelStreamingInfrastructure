@@ -55,6 +55,8 @@ export class NumericParameters {
     static WebRTCFPS = 'WebRTCFPS' as const;
     static WebRTCMinBitrate = 'WebRTCMinBitrate' as const;
     static WebRTCMaxBitrate = 'WebRTCMaxBitrate' as const;
+    static MaxResolutionX = 'MaxResolutionX' as const;
+    static MaxResolutionY = 'MaxResolutionY' as const;
     static MaxReconnectAttempts = 'MaxReconnectAttempts' as const;
     static StreamerAutoJoinInterval = 'StreamerAutoJoinInterval' as const;
 }
@@ -244,7 +246,7 @@ export class Config {
                 })(),
                 useUrlParams
             )
-        );	
+        );
 
         /**
          * Boolean parameters
@@ -588,6 +590,32 @@ export class Config {
                 500 /*min*/,
                 900000 /*max*/,
                 3000 /*value*/,
+                useUrlParams
+            )
+        );
+
+        this.numericParameters.set(
+            NumericParameters.MaxResolutionY,
+            new SettingNumber(
+                NumericParameters.MaxResolutionY,
+                'Max Resolution (y axis)',
+                'The maximum value of the resolution y axis that can be set while matching viewport',
+                0 /*min*/,
+                61440 /*max*/,
+                61440 /*value*/,
+                useUrlParams
+            )
+        );
+
+        this.numericParameters.set(
+            NumericParameters.MaxResolutionX,
+            new SettingNumber(
+                NumericParameters.MaxResolutionX,
+                'Max Resolution (x axis)',
+                'The maximum value of the resolution x axis that can be set while matching viewport',
+                0 /*min*/,
+                61440 /*max*/,
+                61440 /*value*/,
                 useUrlParams
             )
         );

@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-import { Config, Flags } from '../Config/Config';
+import { Config, Flags, NumericParameters } from '../Config/Config';
 import { Logger } from '../Logger/Logger';
 
 /**
@@ -240,9 +240,50 @@ export class VideoPlayer {
               return window.devicePixelRatio;
             })();
 
+            const resolution = (() => {
+                const maxResolutionX = (() => {
+                  try {
+                    return this.config.getNumericSettingValue(NumericParameters.MaxResolutionX);
+                  } catch (e) {
+                    return undefined;
+                  }
+                })();
+                const maxResolutionY = (() => {
+                  try {
+                    return this.config.getNumericSettingValue(NumericParameters.MaxResolutionY);
+                  } catch (e) {
+                    return undefined;
+                  }
+                })();
+
+                // Scales both x & y resolutions down using the ratio of whichever exceeds its maximum resolution the most.
+                // E.g. If MaxResolutionX = 1920 and maxResolutionY = 1080
+                // And the given resolution is 2048x1100
+                // The x value exceeds its maximum by more, and the ration required to bring it down to the maximum is 0.9375
+                // Therefore the resolution used is (2048 * 0.9375)x(1100 * 0.9375) == 1920x1031 (rounded down from 1920x1031.25)
+                const x = videoElementParent.clientWidth * devicePixelRatio;
+                const y = videoElementParent.clientHeight * devicePixelRatio;
+                const xAdjustmentRatio = maxResolutionX == undefined ? 1 : (maxResolutionX / x) > 1 ? 1 : maxResolutionX / x;
+                const yAdjustmentRatio = maxResolutionY == undefined ? 1 : (maxResolutionY / y) > 1 ? 1 : maxResolutionY / y;
+                const adjusted = (() => {
+                  if (xAdjustmentRatio < yAdjustmentRatio) {
+                    return {x: x * xAdjustmentRatio, y: y * xAdjustmentRatio};
+                  } else {
+                    return {x: x * yAdjustmentRatio, y: y * yAdjustmentRatio};
+                  }
+                })();
+                return {x: Math.round(adjusted.x), y: Math.round(adjusted.y)};
+            })();
+
+            Logger.Log(
+                Logger.GetStackTrace(),
+                `Setting resolution to ${resolution.x}x${resolution.y}`,
+                6
+            );
+
             this.onMatchViewportResolutionCallback(
-                videoElementParent.clientWidth * devicePixelRatio,
-                videoElementParent.clientHeight * devicePixelRatio
+              resolution.x,
+              resolution.y,
             );
 
             this.lastTimeResized = new Date().getTime();
