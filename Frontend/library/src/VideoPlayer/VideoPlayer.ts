@@ -19,6 +19,8 @@ export class VideoPlayer {
     private config: Config;
     private videoElement: HTMLVideoElement;
     private audioElement?: HTMLAudioElement;
+    private videoWidth?: number;
+    private videoHeight?: number;
     private orientationChangeTimeout: number;
     private lastTimeResized = new Date().getTime();
 
@@ -69,7 +71,17 @@ export class VideoPlayer {
         };
 
         this.videoElement.onloadedmetadata = () => {
-            this.onVideoInitialized();
+          // Set video width and height every time metadata changes
+          this.videoWidth = this.videoElement.videoWidth
+          this.videoHeight = this.videoElement.videoHeight
+          Logger.Log(
+              Logger.GetStackTrace(),
+              `Video loadedmetadata with resolution: ${this.videoWidth}x${this.videoHeight}`,
+              6
+          );
+          // Now run the user-defined onVideoInitialized
+          this.onVideoInitialized();
+          this.updateVideoStreamSize();
         };
 
         // set resize events to the windows if it is resized or its orientation is changed
@@ -281,6 +293,15 @@ export class VideoPlayer {
                 const yRounded = Math.round(adjusted.y);
                 return {x: xRounded, y: yRounded};
             })();
+
+            if (this.videoWidth == resolution.x && this.videoHeight == resolution.y) {
+              Logger.Log(
+                  Logger.GetStackTrace(),
+                  `Video already matches expected resolution: ${resolution.x}x${resolution.y}`,
+                  6
+              );
+              return;
+            }
 
             Logger.Log(
                 Logger.GetStackTrace(),
