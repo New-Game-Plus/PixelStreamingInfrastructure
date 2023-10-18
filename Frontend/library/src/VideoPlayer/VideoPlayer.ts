@@ -255,11 +255,16 @@ export class VideoPlayer {
                     return undefined;
                   }
                 })();
+                Logger.Log(
+                    Logger.GetStackTrace(),
+                    `Max resolution set to ${maxResolutionX}x${maxResolutionY}`,
+                    6
+                );
 
                 // Scales both x & y resolutions down using the ratio of whichever exceeds its maximum resolution the most.
                 // E.g. If MaxResolutionX = 1920 and maxResolutionY = 1080
                 // And the given resolution is 2048x1100
-                // The x value exceeds its maximum by more, and the ration required to bring it down to the maximum is 0.9375
+                // The x value exceeds its maximum by more, and the ratio required to bring it down to the maximum is 0.9375
                 // Therefore the resolution used is (2048 * 0.9375)x(1100 * 0.9375) == 1920x1031 (rounded down from 1920x1031.25)
                 const x = videoElementParent.clientWidth * devicePixelRatio;
                 const y = videoElementParent.clientHeight * devicePixelRatio;
@@ -272,7 +277,9 @@ export class VideoPlayer {
                     return {x: x * yAdjustmentRatio, y: y * yAdjustmentRatio};
                   }
                 })();
-                return {x: Math.round(adjusted.x), y: Math.round(adjusted.y)};
+                const xRounded = Math.round(adjusted.x);
+                const yRounded = Math.round(adjusted.y);
+                return {x: xRounded, y: yRounded};
             })();
 
             Logger.Log(
